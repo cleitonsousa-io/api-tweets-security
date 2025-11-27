@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Value;
 
 @Entity
-@Table(name = "tb_roles")
+@Table(name = "tb_role")
 public class Role {
 
     @Id
@@ -32,11 +32,11 @@ public class Role {
 
     public enum Values{
 
-        ADMIN(1l),
+        ADMIN(1L),
 
-        BASIC(2l);
+        BASIC(2L);
 
-        long roleId;
+        final long roleId;
 
         Values(long roleId){
             this.roleId = roleId;
