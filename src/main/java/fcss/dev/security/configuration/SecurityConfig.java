@@ -8,11 +8,16 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -29,12 +34,27 @@ public class SecurityConfig {
     private RSAPrivateKey privateKey;
 
     @Bean
-    private SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        authoritiesConverter.setAuthorityPrefix("ROLE_");
+        authoritiesConverter.setAuthoritiesClaimName("roles");
 
-        http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-                .csrf( csrf -> csrf.disable())
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+        return jwtConverter;
+    }
+
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+
+        http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.POST, "/login").permitAll()
+                        .anyRequest().authenticated())
+                .csrf(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
 
@@ -51,6 +71,8 @@ public class SecurityConfig {
 
     }
 
-
-
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 }

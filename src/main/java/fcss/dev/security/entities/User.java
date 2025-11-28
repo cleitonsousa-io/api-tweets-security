@@ -1,6 +1,8 @@
 package fcss.dev.security.entities;
 
+import fcss.dev.security.controller.dto.LoginRequestDTO;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.Set;
@@ -12,7 +14,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id")
+    @Column(name = "user_id", columnDefinition = "CHAR(36)")
     private UUID userId;
 
     @Column(unique = true)
@@ -62,5 +64,9 @@ public class User {
         this.roles = roles;
     }
 
+
+    public boolean isLoginCorrect(LoginRequestDTO loginRequestDTO, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(loginRequestDTO.password(), this.password);
+    }
 
 }
