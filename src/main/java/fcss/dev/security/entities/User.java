@@ -4,9 +4,11 @@ import fcss.dev.security.controller.dto.LoginRequestDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
+import java.sql.Types;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,11 +19,16 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id", columnDefinition = "CHAR(36)")
+    @Column(name = "user_id")
+    @JdbcTypeCode(Types.VARCHAR)
     private UUID userId;
+
+
     @Column(unique = true)
     private String username;
+
     private String password;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "tb_users_roles",
