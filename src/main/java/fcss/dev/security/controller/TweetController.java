@@ -1,6 +1,5 @@
 package fcss.dev.security.controller;
 
-
 import fcss.dev.security.controller.dto.CreateTweetDTO;
 import fcss.dev.security.controller.dto.FeedDTO;
 import fcss.dev.security.controller.dto.FeedItensDTO;
@@ -20,10 +19,8 @@ import java.util.UUID;
 
 @RestController
 public class TweetController {
-
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
-
 
     public TweetController(TweetRepository tweetRepository, UserRepository userRepository) {
         this.tweetRepository = tweetRepository;
@@ -31,30 +28,21 @@ public class TweetController {
     }
 
     @PostMapping("/tweets")
-    public ResponseEntity<Void> createdTweet(@RequestBody CreateTweetDTO dto,
-                                             JwtAuthenticationToken token){
-
+    public ResponseEntity<Void> createdTweet(@RequestBody CreateTweetDTO dto, JwtAuthenticationToken token){
         var user = userRepository.findById(UUID.fromString(token.getName()));
         var tweet = new Tweet();
         tweet.setUser(user.get());
         tweet.setContent(dto.content());
-
         tweetRepository.save(tweet);
-
         return ResponseEntity.ok().build();
-
     }
 
     @DeleteMapping("/tweets/{id}")
     public ResponseEntity<Void> deleteTweet(@PathVariable("id") long tweetId, JwtAuthenticationToken token){
-
         var user = userRepository.findById(UUID.fromString(token.getName()));
-        var tweet = tweetRepository.findById(tweetId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        var tweet = tweetRepository.findById(tweetId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var isAdmin = user.get().getRoles()
-                .stream().anyMatch(role -> role.getName()
-                        .equalsIgnoreCase(Role.Values.ADMIN.name()));
+        var isAdmin = user.get().getRoles().stream().anyMatch(role -> role.getName().equalsIgnoreCase(Role.Values.ADMIN.name()));
 
         if (isAdmin || tweet.getUser().getUserId().equals(UUID.fromString(token.getName()))){
             tweetRepository.deleteById(tweetId);
@@ -66,24 +54,19 @@ public class TweetController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<FeedDTO> feed(@RequestParam(value = "page", defaultValue = "0")int page,
-                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+    public ResponseEntity<FeedDTO> feed(@RequestParam(value = "page", defaultValue = "0")int page, @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimestamp"))
+                .map(tweet -> new FeedItensDTO(
+                        tweet.getTweetId(),
+                        tweet.getContent(),
+                        tweet.getUser().getUsername())
+                );
 
-        var tweets = tweetRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.DESC, "creationTimesStamp"))
-                .map(tweet -> new FeedItensDTO(tweet.getTweetId(), tweet.getContent(), tweet.getUser().getUsername()));
-
-        return ResponseEntity.ok(new FeedDTO(tweets.getContent(), page, pageSize, tweets.getTotalPages(), tweets.getTotalElements()));
+        return ResponseEntity.ok(new FeedDTO(
+                tweets.getContent(), page, pageSize,
+                tweets.getTotalPages(),
+                tweets.getTotalElements())
+        );
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }

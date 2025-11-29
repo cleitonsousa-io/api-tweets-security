@@ -14,34 +14,30 @@ public class Role {
 
     private String name;
 
+
+    // GETTERS
     public Long getRoleId() {
         return roleId;
     }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
     public String getName() {
         return name;
     }
 
+    // SETTERS
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
     public void setName(String name) {
         this.name = name;
     }
 
     public enum Values{
-
         ADMIN(1L),
-
         BASIC(2L);
-
         final long roleId;
-
         Values(long roleId){
             this.roleId = roleId;
         }
-
         public long getRoleId() {
             return roleId;
         }
