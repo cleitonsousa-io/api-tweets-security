@@ -1,6 +1,57 @@
 # Api em java e Srping security
 ### COMO RODAR APLICAÇÃO
 
+`Clone o repositório`
+```bash
+    git clone https://github.com/fcss-dev/api-tweets-security.git
+```
+
+`Verifique pré-requisitos`
+```bash
+    java -version # >= xxxx
+    mvn -v
+    git --version
+    docker --version 
+    docker compose version 
+```
+
+`Configurar variáveis e arquivo de propriedades`
+```text
+server.port=8080
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=admin
+spring.datasource.password=123
+spring.jpa.hibernate.ddl-auto=update
+```
+
+`Ajustar as variaveis do docker-compose.yml`
+```docker
+environment:
+  MYSQL_ROOT_PASSWORD:123
+  MYSQL_DATABASE:mydb
+  MYSQL_USER:admin
+  MYSQL_PASSWORD:123
+```
+
+`Levantar MySQL via Docker`
+```bash
+  docker compose up -d
+```
+
+`Buildar o projeto`
+```bash
+  mvn clean package -DskipTests
+```
+
+`Rodar a aplicação`
+```bash
+  mvn spring-boot:run
+```
+ou  
+`Rodar JAR gerado`
+```bash
+  java -jar target/nome-do-projeto.jar
+```
 
 
 
