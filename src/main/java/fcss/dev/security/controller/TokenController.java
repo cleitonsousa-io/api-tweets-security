@@ -3,10 +3,9 @@ package fcss.dev.security.controller;
 import fcss.dev.security.controller.dto.LoginRequestDTO;
 import fcss.dev.security.controller.dto.LoginResponseDTO;
 import fcss.dev.security.entities.Role;
-import fcss.dev.security.repository.UserRepository;
+import fcss.dev.security.service.AuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -16,39 +15,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @RestController
 public class TokenController {
 
     private final JwtEncoder jwtEncoder;
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-
-    public TokenController(JwtEncoder jwtEncoder, UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.jwtEncoder = jwtEncoder;
-        this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
-        var user = userRepository.findByUsername(loginRequestDTO.username());
-
-        if (user.isEmpty() || !user.get().isLoginCorrect(loginRequestDTO, bCryptPasswordEncoder)){
-            throw new BadCredentialsException("User or Password is invalid!");
-        }
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+        var user = authService.authenticate(loginRequestDTO);
 
         var now = Instant.now();
         var expiresIn = 300L;
 
-        var scopes = user.get().getRoles()
+        var scopes = user.getRoles()
                 .stream()
                 .map(Role::getName)
                 .collect(Collectors.joining(" "));
 
         var claims = JwtClaimsSet.builder()
                 .issuer("mybackend")
-                .subject(user.get().getUserId().toString())
+                .subject(user.getUserId().toString())
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresIn))
                 .claim("scope", scopes)
