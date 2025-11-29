@@ -2,21 +2,40 @@ package fcss.dev.security.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+
 import org.springframework.beans.factory.annotation.Value;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "tb_role")
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private Long roleId;
+
     private String name;
 
-    @Getter
+    // ----- Getters e Setters -----
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    // ----- Enum -----
+
     public enum Values{
         ADMIN(1L),
         BASIC(2L);
@@ -25,6 +44,10 @@ public class Role {
 
         Values(long roleId){
             this.roleId = roleId;
+        }
+
+        public long getRoleId() {
+            return roleId;
         }
     }
 }

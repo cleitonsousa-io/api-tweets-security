@@ -8,7 +8,6 @@ import fcss.dev.security.entities.Tweet;
 import fcss.dev.security.entities.User;
 import fcss.dev.security.repository.TweetRepository;
 import fcss.dev.security.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,16 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
 public class TweetService {
 
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
+
+    public TweetService(TweetRepository tweetRepository, UserRepository userRepository) {
+        this.tweetRepository = tweetRepository;
+        this.userRepository = userRepository;
+    }
 
     public void createTweet(CreateTweetDTO dto, UUID userId) {
         User user = userRepository.findById(userId)

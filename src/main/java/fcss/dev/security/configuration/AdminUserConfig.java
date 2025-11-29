@@ -6,7 +6,6 @@ import fcss.dev.security.repository.RoleRepository;
 import fcss.dev.security.repository.UserRepository;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Set;
 
-@RequiredArgsConstructor
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
 
@@ -22,6 +20,13 @@ public class AdminUserConfig implements CommandLineRunner {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+    public AdminUserConfig(RoleRepository roleRepository,
+                           UserRepository userRepository,
+                           BCryptPasswordEncoder passwordEncoder) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     @Transactional

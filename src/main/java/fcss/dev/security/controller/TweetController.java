@@ -3,18 +3,20 @@ package fcss.dev.security.controller;
 import fcss.dev.security.controller.dto.CreateTweetDTO;
 import fcss.dev.security.controller.dto.FeedDTO;
 import fcss.dev.security.service.TweetService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @RestController
 public class TweetController {
 
     private final TweetService tweetService;
+
+    public TweetController(TweetService tweetService) {
+        this.tweetService = tweetService;
+    }
 
     @PostMapping("/tweets")
     public ResponseEntity<Void> createTweet(@RequestBody CreateTweetDTO dto, JwtAuthenticationToken token){

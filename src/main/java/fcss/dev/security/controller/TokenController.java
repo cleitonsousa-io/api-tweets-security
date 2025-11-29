@@ -4,7 +4,6 @@ import fcss.dev.security.controller.dto.LoginRequestDTO;
 import fcss.dev.security.controller.dto.LoginResponseDTO;
 import fcss.dev.security.entities.Role;
 import fcss.dev.security.service.AuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -15,12 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+
 @RestController
 public class TokenController {
 
     private final JwtEncoder jwtEncoder;
     private final AuthService authService;
+
+    public TokenController(JwtEncoder jwtEncoder, AuthService authService) {
+        this.jwtEncoder = jwtEncoder;
+        this.authService = authService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO) {

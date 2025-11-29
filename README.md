@@ -38,21 +38,10 @@ environment:
   docker compose up -d
 ```
 
-`Buildar o projeto`
-```bash
-  mvn clean package -DskipTests
-```
-
 `Rodar a aplicação`
 ```bash
   mvn spring-boot:run
 ```
-ou  
-`Rodar JAR gerado`
-```bash
-  java -jar target/nome-do-projeto.jar
-```
-
 
 
 ### ROTAS  DA API
