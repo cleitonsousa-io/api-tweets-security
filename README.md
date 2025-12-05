@@ -44,111 +44,78 @@ environment:
 ```
 
 
-### ROTAS  DA API
-#### Todas as rotas da API devem ser chamadas a partir dessa URL.
+# 📘 API Documentation
 
-`API Base URL:` - http://localhost:8080
+**Base URL:** `http://localhost:8081`
 
----
+------------------------------------------------------------------------
 
+## 🔐 **Auth**
 
-ACTION - `Fazer Login`  
-METHOD - `POST`    
-ROUTE - `/login`  
+### **POST /login --- Login**
 
-`REQUEST - JSON > BODY :`  
-```json
+**Body**
+
+``` json
 {
   "username": "admin",
   "password": "123"
 }
 ```
 
-- Return - 200 OK com acessToken
+**Response:** `200 OK` (accessToken)
 
+------------------------------------------------------------------------
 
----
+## 👤 **Users**
 
-`ACTION - Registrar Usuarios`  
-`METHOD - POST`    
-`ROUTE - /users`  
+### **POST /users --- Registrar usuário**
 
-`REQUEST - JSON > BODY :`
-```json
+**Body**
+
+``` json
 {
   "username": "user2",
   "password": "234"
 }
 ```
-- Return - 200 OK
 
----
+**Response:** `200 OK`
 
+------------------------------------------------------------------------
 
-`ACTION - Listar Usuarios`   
-`METHOD - GET`     
-`ROUTE - /users`   
+### **GET /users --- Listar usuários**
 
-`PERMISSION - Auth - Bearer Token`
-```json
+**Auth:** Bearer Token\
+**Response:** `200 OK`
+
+------------------------------------------------------------------------
+
+## 💬 **Tweets**
+
+### **POST /tweets --- Criar tweet**
+
+**Auth:** Bearer Token\
+**Body**
+
+``` json
 {
-  "Token": "acessToken"
-}
-```
-- Return - 200 OK
-
----
-
-
-
-`ACTION - Adicionar tweets`  
-`METHOD - POST`    
-`ROUTE - /tweets`  
-
-`REQUEST - JSON > BODY :`
-```json
-{
-  "content" : "The first tweet, Hello world!"
+  "content": "The first tweet, Hello world!"
 }
 ```
 
-`PERMISSION - Auth > Bearer Token`  
+**Response:** `200 OK`
 
-```json
-{
-  "Token": "acessToken"
-}
-```
-- Return - 200 OK
+------------------------------------------------------------------------
 
----
+### **DELETE /tweets/{id} --- Deletar tweet**
 
-`ACTION - Deletar tweets`   
-`METHOD - DELETE`     
-`ROUTE - /tweets/{id}`  
+**Auth:** Bearer Token\
+**Response:** `200 OK`
 
-`PERMISSION - Auth > Bearer Token`  
-```json
-{
-  "Token": "acessToken"
-}
-```
+------------------------------------------------------------------------
 
-- Return - 200 OK
+### **GET /feed --- Listar tweets**
 
----
-
-`ACTION - Exibir tweets`   
-`METHOD - GET`     
-`ROUTE - /feed`
-
-`PERMISSION - Auth - Bearer Token`
-```json
-{
-  "Token": "acessToken"
-}
-```
-
-- Return - 200 OK
-
----
+**Auth:** Bearer Token\
+**Response:** `200 OK`
