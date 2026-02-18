@@ -1,4 +1,4 @@
-# Api em java e Srping security
+# Api em java e Spring security
 ### COMO RODAR APLICAÇÃO
 
 `Clone o repositório`
